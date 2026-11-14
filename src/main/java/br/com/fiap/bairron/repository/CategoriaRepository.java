@@ -1,0 +1,13 @@
+package br.com.fiap.bairron.repository;
+
+import br.com.fiap.bairron.entities.Categoria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface CategoriaRepository {
+    Page<Categoria> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
+
+    boolean existsByNomeIgnoreCase(String nome);
+
+    boolean existsByNomeIgnoreCaseAndIdNot(String nome, Long id);
+}
