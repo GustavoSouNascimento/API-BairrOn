@@ -3,12 +3,14 @@ package br.com.fiap.bairron.repository;
 import br.com.fiap.bairron.entities.Ocorrencia;
 import br.com.fiap.bairron.entities.StatusOcorrencia;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface OcorrenciaRepository {
+public interface OcorrenciaRepository extends JpaRepository<Ocorrencia, Long>, JpaSpecificationExecutor<Ocorrencia> {
     boolean existsByBairroId(Long bairroId);
 
     boolean existsByCategoriaId(Long categoriaId);
