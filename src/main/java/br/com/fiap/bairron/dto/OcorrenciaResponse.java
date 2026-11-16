@@ -2,9 +2,11 @@ package br.com.fiap.bairron.dto;
 
 import br.com.fiap.bairron.entities.Prioridade;
 import br.com.fiap.bairron.entities.StatusOcorrencia;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDateTime;
 
+@Relation(collectionRelation = "ocorrencias", itemRelation = "ocorrencia")
 public record OcorrenciaResponse(
         Long id,
         String titulo,

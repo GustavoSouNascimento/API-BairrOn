@@ -2,6 +2,7 @@ package br.com.fiap.bairron.config;
 
 import br.com.fiap.bairron.security.ProblemaSegurancaHandler;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.security.autoconfigure.actuate.web.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,6 +31,9 @@ public class SecurityConfig {
                 .cors(c -> c.configurationSource(corsConfigurationSource))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(regras -> regras
+                        .requestMatchers(EndpointRequest.to("health")).permitAll()
+                        .requestMatchers(EndpointRequest.to("info", "metrics")).hasRole("ADMIN")
+                        .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ADMIN")
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/bairros", "/bairros/*", "/categorias", "/categorias/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/bairros", "/categorias").hasAnyRole("MODERADOR", "ADMIN")

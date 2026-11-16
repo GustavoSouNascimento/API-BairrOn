@@ -1,5 +1,6 @@
 package br.com.fiap.bairron.service;
 
+import br.com.fiap.bairron.config.CachesPainel;
 import br.com.fiap.bairron.dto.CategoriaRequest;
 import br.com.fiap.bairron.dto.CategoriaResponse;
 import br.com.fiap.bairron.entities.Categoria;
@@ -7,6 +8,7 @@ import br.com.fiap.bairron.exception.CategoriaNaoEncontradaException;
 import br.com.fiap.bairron.exception.ConflitoException;
 import br.com.fiap.bairron.repository.CategoriaRepository;
 import br.com.fiap.bairron.repository.OcorrenciaRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,8 @@ public class CategoriaService {
     private final OcorrenciaRepository ocorrenciaRepository;
     private final CalculadoraPrioridade calculadora;
 
-    public CategoriaService(CategoriaRepository repository, OcorrenciaRepository ocorrenciaRepository, CalculadoraPrioridade calculadora) {
+    public CategoriaService(CategoriaRepository repository, OcorrenciaRepository ocorrenciaRepository,
+                            CalculadoraPrioridade calculadora) {
         this.repository = repository;
         this.ocorrenciaRepository = ocorrenciaRepository;
         this.calculadora = calculadora;
@@ -51,6 +54,7 @@ public class CategoriaService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CachesPainel.RESUMO, CachesPainel.PRIORITARIAS}, allEntries = true)
     public CategoriaResponse atualizar(Long id, CategoriaRequest dados) {
         Categoria categoria = buscarEntidade(id);
         if (repository.existsByNomeIgnoreCaseAndIdNot(dados.nome().trim(), id)) {
@@ -62,6 +66,7 @@ public class CategoriaService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CachesPainel.RESUMO, CachesPainel.PRIORITARIAS}, allEntries = true)
     public void excluir(Long id) {
         Categoria categoria = buscarEntidade(id);
         if (ocorrenciaRepository.existsByCategoriaId(id)) {

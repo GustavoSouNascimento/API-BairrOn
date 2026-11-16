@@ -6,6 +6,9 @@ import br.com.fiap.bairron.service.MoradorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/moradores")
 public class MoradorController {
-
     private final MoradorService service;
 
     public MoradorController(MoradorService service) {
@@ -29,8 +31,10 @@ public class MoradorController {
     }
 
     @GetMapping
-    public Page<MoradorResponse> listar(@PageableDefault(size = 10, sort = "nome") Pageable pageable) {
-        return service.listar(pageable);
+    public PagedModel<EntityModel<MoradorResponse>> listar(
+            @PageableDefault(size = 10, sort = "nome") Pageable pageable,
+            PagedResourcesAssembler<MoradorResponse> pagedAssembler) {
+        return pagedAssembler.toModel(service.listar(pageable));
     }
 
     @GetMapping("/{id}")

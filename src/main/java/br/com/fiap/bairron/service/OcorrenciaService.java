@@ -1,5 +1,6 @@
 package br.com.fiap.bairron.service;
 
+import br.com.fiap.bairron.config.CachesPainel;
 import br.com.fiap.bairron.dto.OcorrenciaRequest;
 import br.com.fiap.bairron.dto.OcorrenciaResponse;
 import br.com.fiap.bairron.entities.Ocorrencia;
@@ -13,6 +14,7 @@ import br.com.fiap.bairron.repository.MoradorRepository;
 import br.com.fiap.bairron.repository.OcorrenciaRepository;
 import br.com.fiap.bairron.repository.OcorrenciaSpecification;
 import br.com.fiap.bairron.security.UsuarioLogado;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -57,6 +59,7 @@ public class OcorrenciaService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CachesPainel.RESUMO, CachesPainel.PRIORITARIAS}, allEntries = true)
     public OcorrenciaResponse cadastrar(OcorrenciaRequest dados, UsuarioLogado usuario) {
         Ocorrencia ocorrencia = preencher(new Ocorrencia(), dados);
         ocorrencia.setMorador(moradorRepository.findById(usuario.id())
@@ -67,6 +70,7 @@ public class OcorrenciaService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CachesPainel.RESUMO, CachesPainel.PRIORITARIAS}, allEntries = true)
     public OcorrenciaResponse atualizar(Long id, OcorrenciaRequest dados, UsuarioLogado usuario) {
         Ocorrencia ocorrencia = buscarEntidade(id);
         verificarPermissao(ocorrencia, usuario);
@@ -76,6 +80,7 @@ public class OcorrenciaService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CachesPainel.RESUMO, CachesPainel.PRIORITARIAS}, allEntries = true)
     public void excluir(Long id, UsuarioLogado usuario) {
         Ocorrencia ocorrencia = buscarEntidade(id);
         verificarPermissao(ocorrencia, usuario);

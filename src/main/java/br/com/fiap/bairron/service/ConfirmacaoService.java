@@ -1,5 +1,6 @@
 package br.com.fiap.bairron.service;
 
+import br.com.fiap.bairron.config.CachesPainel;
 import br.com.fiap.bairron.dto.ConfirmacaoRequest;
 import br.com.fiap.bairron.dto.ConfirmacaoResponse;
 import br.com.fiap.bairron.entities.Confirmacao;
@@ -10,6 +11,7 @@ import br.com.fiap.bairron.exception.MoradorNaoEncontradoException;
 import br.com.fiap.bairron.repository.ConfirmacaoRepository;
 import br.com.fiap.bairron.repository.MoradorRepository;
 import br.com.fiap.bairron.security.UsuarioLogado;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,7 @@ public class ConfirmacaoService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CachesPainel.RESUMO, CachesPainel.PRIORITARIAS}, allEntries = true)
     public Resultado registrar(Long ocorrenciaId, ConfirmacaoRequest dados, UsuarioLogado usuario) {
         Ocorrencia ocorrencia = ocorrenciaService.buscarEntidade(ocorrenciaId);
         Morador morador = moradorRepository.findById(usuario.id())

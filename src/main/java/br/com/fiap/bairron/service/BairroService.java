@@ -1,5 +1,6 @@
 package br.com.fiap.bairron.service;
 
+import br.com.fiap.bairron.config.CachesPainel;
 import br.com.fiap.bairron.dto.BairroRequest;
 import br.com.fiap.bairron.dto.BairroResponse;
 import br.com.fiap.bairron.entities.Bairro;
@@ -8,6 +9,7 @@ import br.com.fiap.bairron.exception.ConflitoException;
 import br.com.fiap.bairron.repository.BairroRepository;
 import br.com.fiap.bairron.repository.MoradorRepository;
 import br.com.fiap.bairron.repository.OcorrenciaRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,6 @@ import java.util.Set;
 
 @Service
 public class BairroService {
-
     private static final Set<String> ORDENAVEIS = Set.of("id", "nome", "cidade", "uf");
 
     private final BairroRepository repository;
@@ -56,6 +57,7 @@ public class BairroService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CachesPainel.RESUMO, CachesPainel.PRIORITARIAS}, allEntries = true)
     public BairroResponse atualizar(Long id, BairroRequest dados) {
         Bairro bairro = buscarEntidade(id);
         if (repository.existsByNomeIgnoreCaseAndCidadeIgnoreCaseAndIdNot(dados.nome().trim(), dados.cidade().trim(), id)) {
@@ -65,6 +67,7 @@ public class BairroService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CachesPainel.RESUMO, CachesPainel.PRIORITARIAS}, allEntries = true)
     public void excluir(Long id) {
         Bairro bairro = buscarEntidade(id);
         if (moradorRepository.existsByBairroId(id) || ocorrenciaRepository.existsByBairroId(id)) {
