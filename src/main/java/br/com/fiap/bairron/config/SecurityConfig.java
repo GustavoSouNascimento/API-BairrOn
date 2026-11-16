@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(EndpointRequest.to("info", "metrics")).hasRole("ADMIN")
                         .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ADMIN")
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/bairros", "/bairros/*", "/categorias", "/categorias/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/bairros", "/categorias").hasAnyRole("MODERADOR", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/bairros/*", "/categorias/*").hasAnyRole("MODERADOR", "ADMIN")
