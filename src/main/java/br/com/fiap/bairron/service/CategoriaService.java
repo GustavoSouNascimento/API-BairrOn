@@ -20,10 +20,12 @@ public class CategoriaService {
 
     private final CategoriaRepository repository;
     private final OcorrenciaRepository ocorrenciaRepository;
+    private final CalculadoraPrioridade calculadora;
 
-    public CategoriaService(CategoriaRepository repository, OcorrenciaRepository ocorrenciaRepository) {
+    public CategoriaService(CategoriaRepository repository, OcorrenciaRepository ocorrenciaRepository, CalculadoraPrioridade calculadora) {
         this.repository = repository;
         this.ocorrenciaRepository = ocorrenciaRepository;
+        this.calculadora = calculadora;
     }
 
     @Transactional(readOnly = true)
@@ -55,6 +57,7 @@ public class CategoriaService {
             throw new ConflitoException("Já existe uma categoria com este nome.");
         }
         Categoria salva = repository.save(preencher(categoria, dados));
+        ocorrenciaRepository.findByCategoriaId(id).forEach(calculadora::aplicar);
         return resposta(salva);
     }
 
